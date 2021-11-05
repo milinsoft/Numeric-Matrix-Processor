@@ -4,6 +4,7 @@ import re
 
 
 class MatrixProcessor:
+
     def __init__(self, n_rows, n_cols, matrix):
         self.n_rows = n_rows
         self.n_cols = n_cols
@@ -19,7 +20,6 @@ class MatrixProcessor:
             n_rows, n_cols = dim.split()
             n_rows = int(n_rows)
             n_cols = int(n_cols)
-
             matrix = [[int(el) for el in input().split()] for _ in range(n_rows)]
             for row in range(len(matrix)):
                 try:
@@ -28,21 +28,39 @@ class MatrixProcessor:
                 except AssertionError as err:
                     print(err)
                     return main()
-            return cls(n_rows, n_cols, matrix)
+            return cls(n_rows, n_cols, np.array(matrix))
+
+
+def matrix_printer(result):
+    for r in result:
+        print(*r)
+
+
+def add_matrices(m1, m2):
+    if not all([m1.n_rows == m2.n_rows, m1.n_cols == m2.n_cols]):
+        print("ERROR")
+        return main()
+    return np.add(m1, m2)
+
+
+def multiply_by_constant(m, const):
+    return m.matrix * const
+
+
+def take_constant():
+    try:
+        cnstnt = int(input())
+    except ValueError:
+        print("provide constant for multiplying")
+        return take_constant()
+    return cnstnt
 
 
 def main():
-    a = MatrixProcessor.matrix_builder()
-    b = MatrixProcessor.matrix_builder()
-
-    if not all([a.n_rows == b.n_rows, a.n_cols == b.n_cols]):
-        print("ERROR")
-    else:
-        print()
-        result = np.add(a.matrix, b.matrix)
-
-        for r in result:
-            print(*r)
+    matrix_a = MatrixProcessor.matrix_builder()
+    c = take_constant()
+    result = multiply_by_constant(matrix_a, c)
+    matrix_printer(result)
 
 
 if __name__ == '__main__':
