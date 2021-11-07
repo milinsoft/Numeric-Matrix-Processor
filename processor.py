@@ -63,28 +63,43 @@ def multiply_matrices(m1: np.ndarray, m2: np.ndarray) -> dict(description="matri
 def main():
     """ main menu"""
     while True:
-        try:
-            option = int(input("1. Add matrices\n2. Multiply matrix by a constant\n3. Multipl matrices\n0. Exit\nYour choice: "))
-        except ValueError:
-            print("PICK THE OPTION FROM THE LIST!")
-            return main()
-
-        if option == 0:
+        option = input("1. Add matrices\n2. Multiply matrix by a constant\n3. Multipl matrices\n4. Transpose matrix\n0. Exit\nYour choice: ")
+        if option == "0":
             exit()
 
+        elif option in {"1", "3"}:
             """ Add two matrices / Multiply two matrices"""
-        elif option in {1, 3}:
             matrix_a = matrix_builder("Enter size of first matrix: ", "Enter first matrix:")
             matrix_b = matrix_builder("Enter size of second matrix: ", "Enter second matrix:")
-            result = add_matrices(matrix_a, matrix_b) if option == 1 else multiply_matrices(matrix_a, matrix_b)
+            result = add_matrices(matrix_a, matrix_b) if option == "1" else multiply_matrices(matrix_a, matrix_b)
             matrix_printer(result)
 
-        elif option == 2:
+        elif option == "2":
             """ Multiply matrix by a constant """
             matrix_a = matrix_builder("Enter size of matrix: ", "Enter matrix:")
             constant = take_constant()
             result = multiply_by_constant(matrix_a, constant)
             matrix_printer(result)
+
+        elif option == "4":
+            """ Transpose matrix """
+            transposition_type = input("1. Main diagonal\n2. Side diagonal\n3. Vertical line\n4. Horizontal line\nYour choice: ")
+            matrix_a = matrix_builder("Enter size of matrix: ", "Enter matrix:")
+
+            transpositions = {"1": matrix_a.transpose(),  # standard main diagonal transposion
+                              "2":  np.fliplr(np.rot90(matrix_a, 1)),  # side diagonal transposion is done throug one 90 degree counterclock-wise rotation and horizontal - line flip (simply row = row [::-1].
+                              "3": np.flip(matrix_a, 1),  # reversing order of elements along the given axis
+                              "4": np.flipud(matrix_a),  # vertical flip, replacing the sequence of rows moving the top ones to the bottom. Similar to stack operations
+                              }
+
+            try:
+                matrix_printer(transpositions[transposition_type])
+            except KeyError:
+                print("Invalid option chosen.")
+                return main()
+        else:
+            print("Invalid option chosen.")
+            return main()
 
 
 if __name__ == '__main__':
