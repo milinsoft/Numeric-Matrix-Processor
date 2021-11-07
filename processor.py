@@ -3,16 +3,14 @@ import numpy as np
 import re
 
 
-class MatrixProcessor:
+class MatrixProcessor():
 
-    def __init__(self, n_rows, n_cols, matrix):
-        self.n_rows = n_rows
-        self.n_cols = n_cols
+    def __init__(self, matrix):
         self.matrix = matrix
 
     @classmethod
-    def matrix_builder(cls):
-        dim = input().strip()
+    def matrix_builder(cls, dim_message=None, matrix_message=None):
+        dim = input(dim_message).strip()
         if not re.match(r"\A\d+\s*\d+$", dim):
             print("Invalid input!")
             return main()
@@ -20,7 +18,9 @@ class MatrixProcessor:
             n_rows, n_cols = dim.split()
             n_rows = int(n_rows)
             n_cols = int(n_cols)
-            matrix = [[int(el) for el in input().split()] for _ in range(n_rows)]
+
+            print(matrix_message)
+            matrix = [[float(el) for el in input().split()]for _ in range(n_rows)]
             for row in range(len(matrix)):
                 try:
                     message = f"Invalid row length, row {row + 1}"
@@ -28,19 +28,20 @@ class MatrixProcessor:
                 except AssertionError as err:
                     print(err)
                     return main()
-            return cls(n_rows, n_cols, np.array(matrix))
+            return cls(np.array(matrix))
 
 
 def matrix_printer(result):
+    print("The result is:")
     for r in result:
         print(*r)
 
 
 def add_matrices(m1, m2):
-    if not all([m1.n_rows == m2.n_rows, m1.n_cols == m2.n_cols]):
+    if not all([m1.matrix.shape[0] == m2.matrix.shape[0], m1.matrix.shape[1] == m2.matrix.shape[1]]):
         print("ERROR")
         return main()
-    return np.add(m1, m2)
+    return np.add(m1.matrix, m2.matrix)
 
 
 def multiply_by_constant(m, const):
@@ -56,11 +57,45 @@ def take_constant():
     return cnstnt
 
 
+def multiply_matrices(m1, m2):
+    if m1.matrix.shape[1] != m2.matrix.shape[0]:
+        print("ERROR")
+        return main()
+    # return np.multiply(m1.matrix, m2.matrix)
+    return np.matmul(m1.matrix, m2.matrix)  # https://numpy.org/doc/stable/reference/generated/numpy.matmul.html
+
+
 def main():
-    matrix_a = MatrixProcessor.matrix_builder()
-    c = take_constant()
-    result = multiply_by_constant(matrix_a, c)
-    matrix_printer(result)
+    """ main menu"""
+    while True:
+        try:
+            option = int(input("1. Add matrices\n2. Multiply matrix by a constant\n3. Multipl matrices\n0. Exit\nYour choice: "))
+        except ValueError:
+            print("PICK THE OPTION FROM THE LIST!")
+            return main()
+
+        if option == 0:
+            exit()
+        elif option == 1:
+            """ Add two matrices """
+            matrix_a = MatrixProcessor.matrix_builder("Enter size of first matrix: ", "Enter first matrix:")
+            matrix_b = MatrixProcessor.matrix_builder("Enter size of second matrix: ", "Enter second matrix:")
+            result = add_matrices(matrix_a, matrix_b)
+            matrix_printer(result)
+        elif option == 2:
+            """ Multiply matrix by a constant """
+            matrix_a = MatrixProcessor.matrix_builder("Enter size of matrix: ", "Enter matrix:")
+            constant = take_constant()
+            result = multiply_by_constant(matrix_a, constant)
+            matrix_printer(result)
+
+        elif option == 3:
+            " Multiply two matrices "
+            print("not yet implemented")
+            matrix_a = MatrixProcessor.matrix_builder("Enter size of first matrix: ", "Enter first matrix:")
+            matrix_b = MatrixProcessor.matrix_builder("Enter size of second matrix: ", "Enter second matrix:")
+            result = multiply_matrices(matrix_a, matrix_b)
+            matrix_printer(result)
 
 
 if __name__ == '__main__':
