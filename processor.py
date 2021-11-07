@@ -90,7 +90,7 @@ def main():
                               "2":  np.fliplr(np.rot90(matrix_a, 1)),  # side diagonal transposion is done throug one 90 degree counterclock-wise rotation and horizontal - line flip (simply row = row [::-1].
                               "3": np.flip(matrix_a, 1),  # reversing order of elements along the given axis
                               "4": np.flipud(matrix_a),  # vertical flip, replacing the sequence of rows moving the top ones to the bottom. Similar to stack operations
-                              }
+                              }  # can be stored as tuple to save some memory
 
             try:
                 matrix_printer(transpositions[transposition_type])
