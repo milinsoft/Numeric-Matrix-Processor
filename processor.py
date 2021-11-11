@@ -63,7 +63,7 @@ def multiply_matrices(m1: np.ndarray, m2: np.ndarray) -> dict(description="matri
 def main():
     """ main menu"""
     while True:
-        option = input("1. Add matrices\n2. Multiply matrix by a constant\n3. Multipl matrices\n4. Transpose matrix\n5. Calculate a determinant\n0. Exit\nYour choice: ")
+        option = input("1. Add matrices\n2. Multiply matrix by a constant\n3. Multipl matrices\n4. Transpose matrix\n5. Calculate a determinant\nInverse matrix\n0. Exit\nYour choice: ")
         if option == "0":
             exit()
 
@@ -97,10 +97,20 @@ def main():
             except KeyError:
                 print("Invalid option chosen.")
                 return main()
+
         elif option == "5":
             matrix_a = matrix_builder("Enter size of matrix: ", "Enter matrix:")
             result = np.linalg.det(matrix_a)
             print(result)
+
+        elif option == "6":
+            matrix_a = matrix_builder("Enter size of matrix: ", "Enter matrix:")
+            det = np.linalg.det(matrix_a)
+            if det == 0:
+                print("This matrix doesn't have an inverse.")
+            else:
+                result = np.linalg.inv(matrix_a)
+                matrix_printer(result)
 
         else:
             print("Invalid option chosen.")
